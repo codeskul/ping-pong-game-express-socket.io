@@ -1,7 +1,7 @@
 // Canvas Related
 const canvas = document.createElement("canvas");
 const context = canvas.getContext("2d");
-const socket = io("http://localhost:3000/pong");
+const socket = io("/pong");
 let isReferee = false;
 let paddleIndex = 0;
 
@@ -10,7 +10,8 @@ let height = 700;
 
 // Paddle
 let paddleHeight = 10;
-let paddleWidth = 50;
+// let paddleWidth = 50;
+let paddleWidth = 80;
 let paddleDiff = 25;
 let paddleX = [225, 225];
 let trajectoryX = [0, 0];
@@ -83,6 +84,14 @@ function renderCanvas() {
   context.font = "32px Courier New";
   context.fillText(score[0], 20, canvas.height / 2 + 50);
   context.fillText(score[1], 20, canvas.height / 2 - 30);
+
+  //Show  Metrix For Debug
+  context.font = "14px Courier New";
+  context.fillText(`ballX: ${ballX}`, 0, 100);
+  context.fillText(`ballY: ${ballY}`, 0, 120);
+  context.fillText(`ballDirection: ${ballDirection}`, 0, 140);
+  context.fillText(`speedX: ${speedX}`, 0, 160);
+  context.fillText(`speedY: ${speedY}`, 0, 180);
 }
 
 // Reset Ball to Center
@@ -90,6 +99,12 @@ function ballReset() {
   ballX = width / 2;
   ballY = height / 2;
   speedY = 3;
+
+  // Reset Configuration by me
+  speedX = 0;
+  ballX = 250;
+  ballY = 350;
+
   socket.emit("ballMove", {
     ballX,
     ballY,
@@ -200,7 +215,7 @@ function startGame() {
     });
 
     // Hide Cursor
-    canvas.style.cursor = "none";
+    // canvas.style.cursor = "none";
   });
 }
 
