@@ -1,11 +1,13 @@
-const server = require("http").createServer();
-const io = require("socket.io")(server);
+const http = require("http");
+const io = require("socket.io");
+
+const apiServer = require("./api");
+const sockets = require("./sockets");
+const httpServer = http.createServer(apiServer);
+const socketServer = io(httpServer);
 
 const PORT = 3000;
-
-server.listen(PORT);
+httpServer.listen(PORT);
 console.log(`Listening on port ${PORT}...`);
 
-io.on("connection", (socket) => {
-  console.log("a user connected");
-});
+sockets.listen(socketServer);
