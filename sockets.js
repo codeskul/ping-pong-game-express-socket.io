@@ -20,6 +20,10 @@ function listen(io) {
     socket.on("ballMove", (ballData) => {
       socket.broadcast.emit("ballMove", ballData);
     });
+
+    socket.on("disconnect", (reason) => {
+      console.log(`Clent ${socket.id} disconnected: ${reason}`);
+    });
   });
 }
 
