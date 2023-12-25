@@ -86,12 +86,12 @@ function renderCanvas() {
   context.fillText(score[1], 20, canvas.height / 2 - 30);
 
   //Show  Metrix For Debug
-  context.font = "14px Courier New";
-  context.fillText(`ballX: ${ballX}`, 0, 100);
-  context.fillText(`ballY: ${ballY}`, 0, 120);
-  context.fillText(`ballDirection: ${ballDirection}`, 0, 140);
-  context.fillText(`speedX: ${speedX}`, 0, 160);
-  context.fillText(`speedY: ${speedY}`, 0, 180);
+  // context.font = "14px Courier New";
+  // context.fillText(`ballX: ${ballX}`, 0, 100);
+  // context.fillText(`ballY: ${ballY}`, 0, 120);
+  // context.fillText(`ballDirection: ${ballDirection}`, 0, 140);
+  // context.fillText(`speedX: ${speedX}`, 0, 160);
+  // context.fillText(`speedY: ${speedY}`, 0, 180);
 }
 
 // Reset Ball to Center
@@ -106,9 +106,9 @@ function ballReset() {
   ballY = 350;
 
   socket.emit("ballMove", {
-    ballX,
-    ballY,
-    score,
+    BallX: ballX,
+    BallY: ballY,
+    Score: score,
   });
 }
 
@@ -121,9 +121,9 @@ function ballMove() {
     ballX += speedX;
   }
   socket.emit("ballMove", {
-    ballX,
-    ballY,
-    score,
+    BallX: ballX,
+    BallY: ballY,
+    Score: score,
   });
 }
 
@@ -197,7 +197,8 @@ function loadGame() {
 
 // Start Game, Reset Everything
 function startGame() {
-  paddleIndex = isReferee ? 0 : 1;
+  // paddleIndex = isReferee ? 0 : 1;
+  paddleIndex = 0;
   window.requestAnimationFrame(animate);
   canvas.addEventListener("mousemove", (e) => {
     playerMoved = true;
@@ -236,9 +237,18 @@ socket.on("startGame", (refereeId) => {
 socket.on("paddleMove", (paddleData) => {
   // Toggle 1 into 0, and 0 into 1
   const opponentPaddleIndex = 1 - paddleIndex;
-  paddleX[opponentPaddleIndex] = paddleData.xPosition;
+  paddleX[1] = paddleData.xPosition;
 });
 
 socket.on("ballMove", (ballData) => {
-  ({ ballX, ballY, score } = ballData);
+  // console.log(ballData);
+  let { BallX, BallY, Score } = ballData;
+  ballX = BallX;
+  ballY = 700 - BallY;
+  if (!isReferee) {
+    let [score1, score2] = Score;
+    score = [score2, score1];
+  } else {
+    score = Score;
+  }
 });
